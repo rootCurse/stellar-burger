@@ -17,10 +17,15 @@ const constructorSlice = createSlice({
   initialState,
   reducers: {
     addBun(state, action: PayloadAction<TIngredient>) {
-      state.bun = { ...action.payload, id: uuidv4() };
+      state.bun = { ...action.payload, id: action.payload._id };
     },
-    addIngredient(state, action: PayloadAction<TIngredient>) {
-      state.ingredients.push({ ...action.payload, id: uuidv4() });
+    addIngredient: {
+      reducer(state, { payload }: PayloadAction<TConstructorIngredient>) {
+        state.ingredients.push(payload);
+      },
+      prepare(ingredient: TIngredient) {
+        return { payload: { ...ingredient, id: uuidv4() } };
+      }
     },
     removeIngredient(state, action: PayloadAction<string>) {
       state.ingredients = state.ingredients.filter(
